@@ -11,10 +11,10 @@
 #'
 #' @export
 pluralize_gift <- function(gift){
+  gift <- gift %>%
+    str_replace("$", "s") %>%
+    str_replace("ooses", "eese") %>% # goose to geese
+    str_replace("dys", "dies") # lady to ladies
 
-gift <- gift %>%
-  str_replace()
-
-return(gift)
-
+  return(gift)
 }

@@ -17,7 +17,14 @@ sing_day <- function(dataset, line, phrase_col){
 
   phrases <- dataset %>% pull({{phrase_col}})
 
-  #????
+  completeString <- sprintf("On the %s day of Christmas, my true love sent to me,\n", dataset[line,]$Day.in.Words)
 
+  if(line != 1) {
+    a <- sapply (line:2, function(x)  paste(phrases[x], ",\n", sep="", collapse=""))
+    completeString <- paste(completeString, paste(a, collapse=""), sep="")
+  }
 
+  completeString <- paste(completeString, phrases[1], ".", sep="", collapse="")
+
+  return (completeString)
 }

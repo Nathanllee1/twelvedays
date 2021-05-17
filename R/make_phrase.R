@@ -21,9 +21,19 @@
 make_phrase <- function(num, num_word, item, verb, adjective, location){
 
   verb <- str_replace_na(verb, "")
+  adjective <- str_replace_na(adjective, "")
+  location <- str_replace_na(location, "")
 
-  #????
+  if (verb != "") {
+    return(sprintf("%s %s %s", num_word, item, verb))
+  }
 
+  else if (adjective != "") {
+    return(sprintf("%s %s %s", num_word, adjective, item))
+  }
 
+  else if (location != "") {
+    return(sprintf("%s %s %s", num_word, item, location))
+  }
 }
 

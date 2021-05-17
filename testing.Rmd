@@ -1,0 +1,109 @@
+---
+title: "12 Days Scratch"
+author: "Nathan Lee"
+date: "5/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+xmas <- read.csv("https://www.dropbox.com/s/e584pryn8evm1gz/xmas.csv?dl=1")
+
+xmas$NumWord = c('a', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve')
+
+
+xmas
+```
+
+## Step 1
+```{r}
+pluralize_gift <- function(gift){
+  gift <- gift %>%
+    
+    str_replace("$", "s") %>%
+    str_replace("ooses", "eese") %>% # goose to geese
+    str_replace("adys", "adies") # lady to ladies
+
+    return(gift)
+
+}
+
+xmas$Plural.Gift <- pluralize_gift(xmas$Gift.Item)
+xmas
+
+```
+
+
+## Step 2
+```{r}
+make_phrase <- function(num, num_word, item, verb, adjective, location){
+
+  verb <- str_replace_na(verb, "")
+  adjective <- str_replace_na(adjective, "")
+  location <- str_replace_na(location, "")
+  
+  if (verb != "") {
+    return(sprintf("%s %s %s", num_word, item, verb))
+  }
+  
+  else if (adjective != "") {
+    return(sprintf("%s %s %s", num_word, adjective, item))
+  } 
+  
+  else if (location != "") {
+    return(sprintf("%s %s %s", num_word, item, location))
+  }
+}
+
+make_phrase(num = 10, 
+            num_word = "ten", 
+            item = "lords", 
+            verb = "a-leaping", 
+            adjective = "", 
+            location = "")
+
+make_phrase(num = 2, 
+            num_word = "two", 
+            item = "doves", 
+            verb = "", 
+            adjective = "turtle", 
+            location = "")
+
+make_phrase(num = 1, 
+            num_word = "a", 
+            item = "partridge", 
+            verb = "", 
+            adjective = "", 
+            location = "in a pear tree")
+
+xmas <- xmas %>%
+  mutate(
+    Full.Phrases = unlist(pmap( list(Day, NumWord, Gift.Item, Verb, Adjective, Location), 
+                                function(num, NumWord, item, verb, adjective, location) # map columns with headless function
+                                  make_phrase(num, NumWord, item, verb, adjective, location))))
+  
+xmas
+```
+
+## Step Three
+```{r}
+sing_day <- function(dataset, line, phrase_col){
+
+  phrases <- dataset %>% pull({{phrase_col}})
+  print(sprintf("On the %s day of Christmas, my true love sent to me,", dataset[line,]$Day.in.Words))
+  
+  map (print, "Hey")
+
+
+}
+
+xmas[3,]
+
+sing_day(xmas, 2, "Day.in.Words")
+
+```
+
