@@ -1,0 +1,16 @@
+---
+title: "Unit Tests"
+author: "Nathan Lee"
+date: "5/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(testthat)
+test_check(twelvedays)
+
+```
