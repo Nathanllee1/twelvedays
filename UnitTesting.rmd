@@ -11,6 +11,55 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(testthat)
-test_check(twelvedays)
+library(twelvedays)
+
+```
+Pluralize Testing
+```{r}
+context("Pluralize")
+test_that("Returns the plural for a standard substitution", {
+  
+  expect_equal(pluralize_gift("house"), "houses")
+})
+
+test_that("Goose gets turned to geese", {
+  expect_equal(pluralize_gift("goose"), "geese")
+})
+
+test_that("Lady gets turned to ladies", {
+  expect_equal(pluralize_gift("lady"), "ladies")
+})
+```
+Phrase Testing
+```{r}
+context("Make Phrase")
+test_that("Tests a verb", {
+  expect_equal(make_phrase(3, "three", "horses", "neighing", "", ""), "three horses neighing")
+})
+
+test_that("Tests an adjective", {
+  expect_equal(make_phrase(3, "three", "people", "", "lovely", ""), "three lovely people")
+})
+
+test_that("Tests a location", {
+  expect_equal(make_phrase(3, "three", "fruit", "", "", "in a loop"), "three fruit in a loop")
+})
+
+```
+
+Day Testing
+```{r}
+context("sing_day")
+
+test <- data.frame("Full.Phrase"=c("three horses neighing", "two lovely people", "a fruit in a loop"), "Day.in.Words"=c("three", "two", "a"))
+sing_day(test, 3, "Full.Phrase")  
+test_that("Sings one day", {
+  expect_equal(sing_day(test, 1, "Full.Phrase"), "On the three day of Christmas, my true love sent to me,\nthree horses neighing.")  
+  
+})
+
+test_that("Signs three days", {
+  expect_equal(sing_day(test, 3, "Full.Phrase"), "On the a day of Christmas, my true love sent to me,\na fruit in a loop,\ntwo lovely people,\nand three horses neighing.")
+})
 
 ```
