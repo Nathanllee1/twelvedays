@@ -22,7 +22,10 @@ sing_day <- function(dataset, line, phrase_col){
   if(line != 1) {
     a <- sapply (line:2, function(x)  paste(phrases[x], ",\n", sep="", collapse=""))
     completeString <- paste(completeString, paste(a, collapse=""), sep="")
+    completeString <- paste(completeString, "and ", sep="")
   }
+
+
 
   completeString <- paste(completeString, phrases[1], ".", sep="", collapse="")
 
