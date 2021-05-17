@@ -23,13 +23,11 @@ xmas
 ```{r}
 pluralize_gift <- function(gift){
   gift <- gift %>%
-    
     str_replace("$", "s") %>%
     str_replace("ooses", "eese") %>% # goose to geese
-    str_replace("adys", "adies") # lady to ladies
+    str_replace("dys", "dies") # lady to ladies
 
-    return(gift)
-
+  return(gift)
 }
 
 xmas$Plural.Gift <- pluralize_gift(xmas$Gift.Item)
@@ -58,35 +56,46 @@ make_phrase <- function(num, num_word, item, verb, adjective, location){
     return(sprintf("%s %s %s", num_word, item, location))
   }
 }
-
-make_phrase(num = 10, 
-            num_word = "ten", 
-            item = "lords", 
-            verb = "a-leaping", 
-            adjective = "", 
-            location = "")
-
-make_phrase(num = 2, 
-            num_word = "two", 
-            item = "doves", 
-            verb = "", 
-            adjective = "turtle", 
-            location = "")
-
-make_phrase(num = 1, 
-            num_word = "a", 
-            item = "partridge", 
-            verb = "", 
-            adjective = "", 
-            location = "in a pear tree")
+# 
+# make_phrase(num = 10, 
+#             num_word = "ten", 
+#             item = "lords", 
+#             verb = "a-leaping", 
+#             adjective = "", 
+#             location = "")
+# 
+# make_phrase(num = 2, 
+#             num_word = "two", 
+#             item = "doves", 
+#             verb = "", 
+#             adjective = "turtle", 
+#             location = "")
+# 
+# make_phrase(num = 1, 
+#             num_word = "a", 
+#             item = "partridge", 
+#             verb = "", 
+#             adjective = "", 
+#             location = "in a pear tree")
 
 xmas <- xmas %>%
   mutate(
-    Full.Phrases = unlist(pmap( list(Day, NumWord, Gift.Item, Verb, Adjective, Location), 
+    Plural.Gift = pluralize_gift(Gift.Item),
+    Full.Phrases = unlist(pmap( list(Day, NumWord, Plural.Gift, Verb, Adjective, Location), 
                                 function(num, NumWord, item, verb, adjective, location) # map columns with headless function
-                                  make_phrase(num, NumWord, item, verb, adjective, location))))
+                                  make_phrase(num, NumWord, item, verb, adjective, location)))
+    
+  ) 
   
-xmas
+a <- sapply(1:12, function(x) {
+  paste(sing_day(xmas, x, "Full.Phrases"), "\n\n", sep="")
+})
+
+
+cat(a, sep="")
+
+
+
 ```
 
 ## Step Three
@@ -94,16 +103,23 @@ xmas
 sing_day <- function(dataset, line, phrase_col){
 
   phrases <- dataset %>% pull({{phrase_col}})
-  print(sprintf("On the %s day of Christmas, my true love sent to me,", dataset[line,]$Day.in.Words))
   
-  map (print, "Hey")
+  completeString <- sprintf("On the %s day of Christmas, my true love sent to me,\n", dataset[line,]$Day.in.Words)
+  
+  if(line != 1) {
+    a <- sapply (line:2, function(x)  paste(phrases[x], ",\n", sep="", collapse=""))
+    completeString <- paste(completeString, paste(a, collapse=""), sep="")
+  }
+  
+  completeString <- paste(completeString, phrases[1], ".", sep="", collapse="")
 
-
+  return (completeString)
 }
 
-xmas[3,]
+b <- sing_day(xmas, 12, "Full.Phrases")
 
-sing_day(xmas, 2, "Day.in.Words")
+cat(b)
 
 ```
+
 

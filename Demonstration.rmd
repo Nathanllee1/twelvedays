@@ -1,0 +1,41 @@
+---
+title: "Package Demonstration"
+author: "Nathan Lee"
+date: "5/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(tidyverse)
+```
+
+## URL to Github repo: https://github.com/Nathanllee1/twelvedays
+```{r, results="hide"}
+library(twelvedays)
+```
+
+```{r}
+
+xmas <- read.csv("https://www.dropbox.com/s/e584pryn8evm1gz/xmas.csv?dl=1")
+
+xmas$NumWord = c('a', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve') # add a column of word numbers
+
+xmas <- xmas %>%
+  mutate(
+    Plural.Gift = ifelse(Day==1, Gift.Item, pluralize_gift(Gift.Item)),
+    Full.Phrases = unlist(pmap( list(Day, NumWord, Plural.Gift, Verb, Adjective, Location), 
+                                function(num, NumWord, item, verb, adjective, location) # map columns with headless function
+                                  make_phrase(num, NumWord, item, verb, adjective, location)))
+  ) 
+  
+a <- sapply(1:12, function(x) {
+  paste(sing_day(xmas, x, "Full.Phrases"), "\n\n", sep="")
+})
+
+
+cat(a, sep="")
+```
